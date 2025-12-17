@@ -1,0 +1,45 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String      @id @default(cuid())
+  email     String      @unique
+  password  String
+  name      String?
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  targets   TargetURL[]
+}
+
+model TargetURL {
+  id          String       @id @default(cuid())
+  url         String
+  name        String
+  schedule    String       @default("daily") // daily, weekly, etc.
+  prompt      String?      // Specific prompt for this URL, overrides global if any
+  userId      String
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  scanResults ScanResult[]
+}
+
+model ScanResult {
+  id            String    @id @default(cuid())
+  targetUrlId   String
+  targetUrl     TargetURL @relation(fields: [targetUrlId], references: [id], onDelete: Cascade)
+  status        String    // PENDING, SUCCESS, FAILED
+  content       String?   // Raw scraped content (optional, maybe truncated)
+  extractedData String?   // JSON string or text of extracted info
+  errorMessage  String?
+  createdAt     DateTime  @default(now())
+}
