@@ -188,6 +188,7 @@ export async function updateTargetConfig(
         const updateData: any = {
             schedule,
             prompt: prompt || null,
+            active,
         };
 
         if (customFields !== undefined) {
