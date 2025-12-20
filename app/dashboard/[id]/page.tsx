@@ -1,7 +1,7 @@
 import { prisma } from '@/lib/prisma';
 import { auth } from '@/auth';
 import { notFound, redirect } from 'next/navigation';
-import { triggerScan } from '@/app/lib/actions';
+import { triggerScan, updateTargetSchedule } from '@/app/lib/actions';
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
     const resolvedParams = await params;
@@ -61,7 +61,28 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
                     <dl className="sm:divide-y sm:divide-gray-200">
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt className="text-sm font-medium text-gray-500">Schedule</dt>
-                            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">{target.schedule}</dd>
+                            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                                <form action={async (formData) => {
+                                    'use server';
+                                    await updateTargetSchedule(target.id, formData);
+                                }} className="flex items-center gap-2">
+                                    <select
+                                        name="schedule"
+                                        defaultValue={target.schedule}
+                                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-2 py-1 border"
+                                    >
+                                        <option value="daily">Daily</option>
+                                        <option value="weekly">Weekly</option>
+                                        <option value="monthly">Monthly</option>
+                                    </select>
+                                    <button
+                                        type="submit"
+                                        className="rounded-md bg-white px-2.5 py-1.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+                                    >
+                                        Save
+                                    </button>
+                                </form>
+                            </dd>
                         </div>
                         <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
                             <dt className="text-sm font-medium text-gray-500">Extraction Prompt</dt>

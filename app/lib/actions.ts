@@ -143,3 +143,45 @@ export async function triggerScan(targetId: string) {
         return { error: 'Scan failed' };
     }
 }
+
+export async function updateTargetSchedule(
+    targetId: string,
+    formData: FormData
+) {
+    const session = await auth();
+    if (!session?.user?.id) return { error: 'Not authenticated' };
+
+    const schema = z.object({
+        schedule: z.string(),
+    });
+
+    const data = schema.safeParse({
+        schedule: formData.get('schedule'),
+    });
+
+    if (!data.success) {
+        return { error: 'Invalid schedule' };
+    }
+
+    const { schedule } = data.data;
+
+    // Verify ownership
+    const target = await prisma.targetURL.findUnique({
+        where: { id: targetId },
+    });
+
+    if (!target || target.userId !== session.user.id) {
+        return { error: 'Unauthorized' };
+    }
+
+    try {
+        await prisma.targetURL.update({
+            where: { id: targetId },
+            data: { schedule },
+        });
+    } catch (error) {
+        return { error: 'Failed to update schedule' };
+    }
+
+    redirect(`/dashboard/${targetId}`);
+}
