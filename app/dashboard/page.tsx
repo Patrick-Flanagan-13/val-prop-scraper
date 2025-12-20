@@ -1,6 +1,7 @@
 import { getTargetUrls } from '@/app/lib/data';
 import { triggerScan } from '@/app/lib/actions';
 import Link from 'next/link';
+import ScanButton from './ScanButton';
 
 export default async function Page() {
     const targets = await getTargetUrls();
@@ -64,17 +65,10 @@ export default async function Page() {
                                             </td>
                                             <td className="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
                                                 <div className="flex justify-end gap-2">
-                                                    <form action={async () => {
-                                                        'use server';
-                                                        await triggerScan(target.id);
-                                                    }}>
-                                                        <button
-                                                            type="submit"
-                                                            className="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-3 py-1 rounded-md"
-                                                        >
-                                                            Scan Now
-                                                        </button>
-                                                    </form>
+                                                    <ScanButton
+                                                        targetId={target.id}
+                                                        className="text-indigo-600 hover:text-indigo-900 bg-indigo-50 px-3 py-1 rounded-md"
+                                                    />
                                                     <Link href={`/dashboard/${target.id}`} className="text-indigo-600 hover:text-indigo-900 px-3 py-1 flex items-center">
                                                         View<span className="sr-only">, {target.name}</span>
                                                     </Link>

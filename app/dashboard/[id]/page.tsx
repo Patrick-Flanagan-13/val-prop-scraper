@@ -3,6 +3,7 @@ import { auth } from '@/auth';
 import { notFound, redirect } from 'next/navigation';
 import { triggerScan } from '@/app/lib/actions';
 import TargetConfigurationForm from './TargetConfigurationForm';
+import ScanButton from '../ScanButton';
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
     const resolvedParams = await params;
@@ -40,17 +41,10 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
                     <p className="mt-1 text-sm text-gray-500">{target.url}</p>
                 </div>
                 <div className="mt-4 flex md:ml-4 md:mt-0">
-                    <form action={async () => {
-                        'use server';
-                        await triggerScan(target.id);
-                    }}>
-                        <button
-                            type="submit"
-                            className="ml-3 inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                        >
-                            Scan Now
-                        </button>
-                    </form>
+                    <ScanButton
+                        targetId={target.id}
+                        className="ml-3 inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                    />
                 </div>
             </div>
 
