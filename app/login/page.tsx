@@ -2,7 +2,7 @@
 
 import { useActionState } from 'react';
 import { authenticate } from '@/app/lib/actions';
-import { signIn } from 'next-auth/react';
+import { signIn } from 'next-auth/webauthn';
 
 export default function Page() {
     const [errorMessage, dispatch] = useActionState(authenticate, undefined);
