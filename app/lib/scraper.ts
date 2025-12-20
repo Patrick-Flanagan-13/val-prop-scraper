@@ -28,12 +28,21 @@ export async function scrapeAndProcess(targetId: string) {
         const textContent = $('body').text().replace(/\s+/g, ' ').trim().substring(0, 15000); // Limit context window
 
         // 2. Process with LLM
-        const prompt = target.prompt || "Extract the main value proposition and key features from this text.";
+        const userPrompt = target.prompt ? `Additional Instructions: ${target.prompt}` : "";
+
+        const systemMessage = `You are a helpful assistant that extracts structured information from web page text about credit cards or financial products.
+        You MUST return the result as a valid JSON object with the following keys:
+        - "APR": The Annual Percentage Rate details.
+        - "Points Earned": Details about points, miles, or rewards currency.
+        - "Cash Back": Details about cash back offers.
+        - "Benefits": Other key benefits or perks.
+        
+        If a field is not found, use "N/A". return ONLY the JSON object, no markdown formatting.`;
 
         const completion = await openai.chat.completions.create({
             messages: [
-                { role: "system", content: "You are a helpful assistant that extracts structured information from web page text." },
-                { role: "user", content: `Prompt: ${prompt}\n\nWeb Page Text:\n${textContent}` }
+                { role: "system", content: systemMessage },
+                { role: "user", content: `${userPrompt}\n\nWeb Page Text:\n${textContent}` }
             ],
             model: "gpt-3.5-turbo",
         });

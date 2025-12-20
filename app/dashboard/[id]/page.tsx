@@ -3,6 +3,7 @@ import { auth } from '@/auth';
 import { notFound, redirect } from 'next/navigation';
 import { triggerScan } from '@/app/lib/actions';
 import TargetConfigurationForm from './TargetConfigurationForm';
+import Link from 'next/link';
 import ScanButton from '../ScanButton';
 
 export default async function Page({ params }: { params: Promise<{ id: string }> }) {
@@ -75,13 +76,18 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
                                 </div>
                                 <div className="mt-2 sm:flex sm:justify-between">
                                     <div className="sm:flex">
-                                        <p className="flex items-center text-sm text-gray-500">
+                                        <div className="flex items-center text-sm text-gray-500">
                                             {scan.extractedData ? (
-                                                <span className="whitespace-pre-wrap">{scan.extractedData}</span>
+                                                <div className="flex flex-col gap-2">
+                                                    <span className="whitespace-pre-wrap line-clamp-2">{scan.extractedData.substring(0, 100)}...</span>
+                                                    <Link href={`/dashboard/scan/${scan.id}`} className="text-indigo-600 hover:text-indigo-900 font-medium">
+                                                        View Results &rarr;
+                                                    </Link>
+                                                </div>
                                             ) : (
                                                 <span className="text-red-500">{scan.errorMessage}</span>
                                             )}
-                                        </p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
