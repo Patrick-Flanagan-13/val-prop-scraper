@@ -394,6 +394,7 @@ export async function promoteProposal(proposalId: string) {
                     url: proposal.url,
                     name: proposal.title,
                     userId: session.user.id,
+                    schedule: 'monthly',
                 },
             }),
             prisma.proposedTarget.update({
