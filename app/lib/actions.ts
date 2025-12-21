@@ -141,7 +141,8 @@ export async function triggerScan(targetId: string) {
     const result = await scrapeAndProcess(targetId);
 
     if (result.success) {
-        redirect(`/dashboard/${targetId}`);
+        // We return success instead of redirecting, allowing the client to show a toast
+        return { success: true };
     } else {
         return { error: 'Scan failed' };
     }
