@@ -110,7 +110,14 @@ export default async function Page({
                                                     )}
                                                 </td>
                                                 <td className="px-3 py-4 text-sm text-gray-500 max-w-[200px] truncate">
-                                                    {target.url}
+                                                    <div className="flex flex-col">
+                                                        <span>{target.url}</span>
+                                                        {target.country && (
+                                                            <span className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-600 ring-1 ring-inset ring-gray-500/10 w-fit mt-1">
+                                                                {target.country}
+                                                            </span>
+                                                        )}
+                                                    </div>
                                                 </td>
                                                 <td className="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                                     {target.schedule}

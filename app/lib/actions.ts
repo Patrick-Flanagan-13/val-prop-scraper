@@ -6,6 +6,9 @@ import { prisma } from '@/lib/prisma';
 import bcrypt from 'bcryptjs';
 import { z } from 'zod';
 import { redirect } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
+import { scrapeAndProcess } from './scraper';
+import { detectCountry } from './utils/country';
 
 export async function authenticate(
     prevState: string | undefined,
@@ -106,12 +109,15 @@ export async function createTarget(
         return 'Invalid fields';
     }
 
+    const { url } = data.data;
+    const country = detectCountry(url);
+
     try {
         await prisma.targetURL.create({
             data: {
                 ...data.data,
                 userId: session.user.id,
-                // If customFields is undefined, Prisma uses default from schema
+                country,
             },
         });
     } catch (error) {
@@ -120,8 +126,6 @@ export async function createTarget(
 
     redirect('/dashboard');
 }
-
-import { scrapeAndProcess } from './scraper';
 
 export async function triggerScan(targetId: string) {
     const session = await auth();
@@ -396,6 +400,7 @@ export async function promoteProposal(proposalId: string) {
                     name: proposal.title,
                     userId: session.user.id,
                     schedule: 'monthly',
+                    country: detectCountry(proposal.url),
                 },
             }),
             prisma.proposedTarget.update({
@@ -458,4 +463,28 @@ export async function updateSettings(
     }
 
     return 'Settings updated';
+}
+
+// Temporary backfill action
+export async function backfillCountries() {
+    const session = await auth();
+    if (!session?.user?.id) return { error: 'Not authenticated' };
+
+    const targets = await prisma.targetURL.findMany({
+        where: { userId: session.user.id },
+    });
+
+    for (const target of targets) {
+        if (!target.country) {
+            const country = detectCountry(target.url);
+            if (country) {
+                await prisma.targetURL.update({
+                    where: { id: target.id },
+                    data: { country },
+                });
+            }
+        }
+    }
+
+    return { success: 'Backfill complete' };
 }
