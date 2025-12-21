@@ -152,7 +152,7 @@ export async function triggerScan(targetId: string) {
     }
 }
 
-export async function triggerAllScans() {
+export async function getActiveTargetIds() {
     const session = await auth();
     if (!session?.user?.id) return { error: 'Not authenticated' };
 
@@ -161,34 +161,13 @@ export async function triggerAllScans() {
             userId: session.user.id,
             active: true,
         },
+        select: {
+            id: true,
+            name: true,
+        }
     });
 
-    if (targets.length === 0) {
-        return { success: true, count: 0, message: 'No active targets to scan.' };
-    }
-
-    // Run scans with limited concurrency (max 2 at a time) to prevent resource exhaustion
-    const concurrency = 2;
-    const results: PromiseSettledResult<{ success: boolean; data?: any; error?: any }>[] = [];
-
-    // Process in chunks
-    for (let i = 0; i < targets.length; i += concurrency) {
-        const chunk = targets.slice(i, i + concurrency);
-        const chunkResults = await Promise.allSettled(
-            chunk.map(target => scrapeAndProcess(target.id))
-        );
-        results.push(...chunkResults);
-    }
-
-    const successCount = results.filter(r => r.status === 'fulfilled' && r.value.success).length;
-    const failCount = results.length - successCount;
-
-    return {
-        success: true,
-        count: successCount,
-        total: targets.length,
-        message: `Scanned ${successCount} of ${targets.length} targets successfully.${failCount > 0 ? ` ${failCount} failed.` : ''}`
-    };
+    return { success: true, targets };
 }
 
 export async function updateTargetConfig(
