@@ -5,6 +5,8 @@ import ScanButton from './ScanButton';
 import { formatDate } from '@/app/lib/date-utils';
 import SearchFilterBar from './SearchFilterBar';
 
+import ScanAllButton from './ScanAllButton';
+
 export default async function Page({
     searchParams,
 }: {
@@ -50,10 +52,11 @@ export default async function Page({
                         Target URLs
                     </h2>
                 </div>
-                <div className="mt-4 flex md:ml-4 md:mt-0">
+                <div className="mt-4 flex md:ml-4 md:mt-0 gap-3">
+                    <ScanAllButton className="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50" />
                     <Link
                         href="/dashboard/new"
-                        className="ml-3 inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                        className="inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                     >
                         Add New URL
                     </Link>

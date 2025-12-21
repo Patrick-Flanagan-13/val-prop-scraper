@@ -152,6 +152,37 @@ export async function triggerScan(targetId: string) {
     }
 }
 
+export async function triggerAllScans() {
+    const session = await auth();
+    if (!session?.user?.id) return { error: 'Not authenticated' };
+
+    const targets = await prisma.targetURL.findMany({
+        where: {
+            userId: session.user.id,
+            active: true,
+        },
+    });
+
+    if (targets.length === 0) {
+        return { success: true, count: 0, message: 'No active targets to scan.' };
+    }
+
+    // Run scans in parallel
+    const results = await Promise.allSettled(
+        targets.map(target => scrapeAndProcess(target.id))
+    );
+
+    const successCount = results.filter(r => r.status === 'fulfilled' && r.value.success).length;
+    const failCount = results.length - successCount;
+
+    return {
+        success: true,
+        count: successCount,
+        total: targets.length,
+        message: `Scanned ${successCount} of ${targets.length} targets successfully.${failCount > 0 ? ` ${failCount} failed.` : ''}`
+    };
+}
+
 export async function updateTargetConfig(
     targetId: string,
     formData: FormData
