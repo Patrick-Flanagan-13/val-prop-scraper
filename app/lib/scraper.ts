@@ -42,7 +42,13 @@ export async function scrapeAndProcess(targetId: string) {
         }
 
         const page = await browser.newPage();
-        await page.goto(target.url, { waitUntil: 'networkidle2', timeout: 30000 });
+        const response = await page.goto(target.url, { waitUntil: 'networkidle2', timeout: 30000 });
+
+        // Check HTTP Status
+        if (!response || !response.ok()) {
+            const status = response ? response.status() : 'Unknown';
+            throw new Error(`HTTP Error: ${status}`);
+        }
 
         // Screenshot
         const screenshotBuffer = await page.screenshot({ type: 'jpeg', quality: 60, encoding: 'base64' });
@@ -57,6 +63,17 @@ export async function scrapeAndProcess(targetId: string) {
         const textContent = await page.evaluate(() => {
             return document.body.innerText.replace(/\s+/g, ' ').trim().substring(0, 15000);
         });
+
+        // Check for "Page Not Found" indicators in the text
+        const errorPhrases = ['page not found', '404 error', '404 not found', 'page cannot be found'];
+        const lowerText = textContent.toLowerCase();
+
+        // Check if the page text is very short AND contains an error phrase (to avoid false positives on long pages mentioning 404)
+        // Or if it just prominently features the error.
+        // Simple heuristic: If text is short (< 500 chars) and contains error phrase, likely a 404 page.
+        if (textContent.length < 1000 && errorPhrases.some(phrase => lowerText.includes(phrase))) {
+            throw new Error('Page content indicates "Page Not Found"');
+        }
 
         await browser.close();
 
