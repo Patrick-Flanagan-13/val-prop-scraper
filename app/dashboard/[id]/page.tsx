@@ -68,25 +68,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
                 />
             </div>
 
-            <div className="bg-white shadow sm:rounded-lg mb-8 border border-red-200">
-                <div className="px-4 py-5 sm:px-6">
-                    <h3 className="text-lg leading-6 font-medium text-red-900">Danger Zone</h3>
-                    <p className="mt-1 max-w-2xl text-sm text-gray-500">
-                        Irreversible actions.
-                    </p>
-                </div>
-                <div className="border-t border-red-200 px-4 py-5 sm:p-6">
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <h3 className="text-sm font-medium text-gray-900">Delete Target</h3>
-                            <p className="text-sm text-gray-500">
-                                Permanently delete this target and all its scan history.
-                            </p>
-                        </div>
-                        <DeleteTargetButton targetId={target.id} />
-                    </div>
-                </div>
-            </div>
+
 
             <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">Scan History</h3>
             <div className="overflow-hidden bg-white shadow sm:rounded-md">
@@ -146,6 +128,26 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
                         <li className="px-4 py-4 sm:px-6 text-center text-gray-500">No scans yet.</li>
                     )}
                 </ul>
+            </div>
+
+            <div className="bg-white shadow sm:rounded-lg mt-12 mb-8 border border-red-200">
+                <div className="px-4 py-5 sm:px-6">
+                    <h3 className="text-lg leading-6 font-medium text-red-900">Danger Zone</h3>
+                    <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                        Irreversible actions.
+                    </p>
+                </div>
+                <div className="border-t border-red-200 px-4 py-5 sm:p-6">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h3 className="text-sm font-medium text-gray-900">Delete Target</h3>
+                            <p className="text-sm text-gray-500">
+                                Permanently delete this target and all its scan history.
+                            </p>
+                        </div>
+                        <DeleteTargetButton targetId={target.id} />
+                    </div>
+                </div>
             </div>
         </div>
     );
