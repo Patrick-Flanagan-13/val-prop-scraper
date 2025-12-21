@@ -167,10 +167,18 @@ export async function triggerAllScans() {
         return { success: true, count: 0, message: 'No active targets to scan.' };
     }
 
-    // Run scans in parallel
-    const results = await Promise.allSettled(
-        targets.map(target => scrapeAndProcess(target.id))
-    );
+    // Run scans with limited concurrency (max 2 at a time) to prevent resource exhaustion
+    const concurrency = 2;
+    const results: PromiseSettledResult<{ success: boolean; data?: any; error?: any }>[] = [];
+
+    // Process in chunks
+    for (let i = 0; i < targets.length; i += concurrency) {
+        const chunk = targets.slice(i, i + concurrency);
+        const chunkResults = await Promise.allSettled(
+            chunk.map(target => scrapeAndProcess(target.id))
+        );
+        results.push(...chunkResults);
+    }
 
     const successCount = results.filter(r => r.status === 'fulfilled' && r.value.success).length;
     const failCount = results.length - successCount;
