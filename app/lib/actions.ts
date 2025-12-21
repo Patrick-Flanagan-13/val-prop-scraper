@@ -488,3 +488,19 @@ export async function backfillCountries() {
 
     return { success: 'Backfill complete' };
 }
+
+export async function getTargetName(targetId: string) {
+    const session = await auth();
+    if (!session?.user?.id) return null;
+
+    const target = await prisma.targetURL.findUnique({
+        where: { id: targetId },
+        select: { name: true, userId: true },
+    });
+
+    if (!target || target.userId !== session.user.id) {
+        return null;
+    }
+
+    return target.name;
+}
