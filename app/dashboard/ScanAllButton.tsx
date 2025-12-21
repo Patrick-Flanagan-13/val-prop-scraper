@@ -35,12 +35,22 @@ export default function ScanAllButton({ className }: Props) {
     };
 
     return (
-        <button
-            onClick={handleClick}
-            disabled={isPending}
-            className={`${className} ${isPending ? 'opacity-50 cursor-not-allowed' : ''}`}
-        >
-            {isPending ? 'Scanning All...' : 'Scan All Targets'}
-        </button>
+        <>
+            {isPending && (
+                <div className="fixed inset-0 bg-black/20 backdrop-blur-sm z-50 flex items-center justify-center cursor-wait">
+                    <div className="bg-white rounded-lg shadow-xl p-6 flex flex-col items-center gap-4">
+                        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-indigo-600"></div>
+                        <p className="text-gray-700 font-medium animate-pulse">Scanning all targets...</p>
+                    </div>
+                </div>
+            )}
+            <button
+                onClick={handleClick}
+                disabled={isPending}
+                className={`${className} ${isPending ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+                {isPending ? 'Scanning...' : 'Scan All Targets'}
+            </button>
+        </>
     );
 }
