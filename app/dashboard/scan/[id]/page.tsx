@@ -1,8 +1,8 @@
 import { prisma } from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-
 import ScanReviewControls from './ScanReviewControls';
+import ScanComparison from './ScanComparison';
 
 export default async function ScanResultPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
@@ -16,31 +16,43 @@ export default async function ScanResultPage({ params }: { params: Promise<{ id:
         notFound();
     }
 
-    let summary: string | null = null;
-    let tableData: any = null;
-    let isJson = false;
-    let hasStructuredData = false;
+    let scanData = { summary: "", structured: {} };
+    let masterData = null;
 
+    // Parse Scan Data
     if (result.extractedData) {
         try {
             const parsed = JSON.parse(result.extractedData);
-            if (typeof parsed === 'object' && parsed !== null) {
-                isJson = true;
-                if (parsed.structured) {
-                    // New Format
-                    summary = parsed.summary;
-                    tableData = parsed.structured;
-                    hasStructuredData = true;
-                } else {
-                    // Previous Format (direct APR etc.)
-                    tableData = parsed;
-                    hasStructuredData = true; // technically it is structured
-                }
+            if (parsed.structured) {
+                scanData = parsed;
+            } else {
+                // Convert flat structure to normalized format
+                const { summary, ...rest } = parsed;
+                scanData = { summary: summary || "", structured: rest };
             }
         } catch (e) {
-            isJson = false;
+            // Fallback for non-json
         }
     }
+
+    // Parse Master Data
+    if (result.targetUrl.masterData) {
+        try {
+            const parsed = JSON.parse(result.targetUrl.masterData);
+            if (parsed.structured) {
+                masterData = parsed;
+            } else {
+                const { summary, ...rest } = parsed;
+                masterData = { summary: summary || "", structured: rest };
+            }
+        } catch (e) {
+            // Fallback
+        }
+    }
+
+    // Check if we have valid structured data to show comparison
+    const hasStructuredData = Object.keys(scanData.structured || {}).length > 0 || !!scanData.summary;
+
 
     return (
         <div>
@@ -67,37 +79,12 @@ export default async function ScanResultPage({ params }: { params: Promise<{ id:
                 hasStructuredData={hasStructuredData}
             />
 
-            {isJson ? (
-                <div className="space-y-6">
-                    {summary && (
-                        <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-                            <div className="px-4 py-5 sm:px-6">
-                                <h3 className="text-lg leading-6 font-medium text-gray-900">Summary</h3>
-                            </div>
-                            <div className="border-t border-gray-200 px-4 py-5 sm:p-6">
-                                <p className="text-sm text-gray-900">{summary}</p>
-                            </div>
-                        </div>
-                    )}
-
-                    <div className="bg-white shadow overflow-hidden sm:rounded-lg">
-                        <div className="px-4 py-5 sm:px-6">
-                            <h3 className="text-lg leading-6 font-medium text-gray-900">Extracted Information</h3>
-                        </div>
-                        <div className="border-t border-gray-200">
-                            <dl className="sm:divide-y sm:divide-gray-200">
-                                {Object.entries(tableData).map(([key, value]) => (
-                                    <div key={key} className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                                        <dt className="text-sm font-medium text-gray-500 capitalize">{key}</dt>
-                                        <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2 whitespace-pre-wrap">
-                                            {String(value)}
-                                        </dd>
-                                    </div>
-                                ))}
-                            </dl>
-                        </div>
-                    </div>
-                </div>
+            {hasStructuredData ? (
+                <ScanComparison
+                    scanId={result.id}
+                    scanData={scanData as any}
+                    masterData={masterData}
+                />
             ) : (
                 <div className="bg-white shadow overflow-hidden sm:rounded-lg">
                     <div className="px-4 py-5 sm:px-6">
