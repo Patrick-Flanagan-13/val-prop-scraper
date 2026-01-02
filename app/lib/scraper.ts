@@ -83,10 +83,14 @@ export async function scrapeAndProcess(targetId: string) {
         // Build dynamic schema from customFields or default
         const fieldsToExtract = target.customFields && target.customFields.length > 0
             ? target.customFields
-            : ["APR", "Points Earned", "Cash Back", "Benefits"];
+            : ["APR", "Points Earned", "Cash Back", "Benefits", "Card Brands"];
 
         const fieldSchema = fieldsToExtract.reduce((acc: Record<string, string>, field: string) => {
-            acc[field] = `Extract details regarding ${field}.`;
+            if (field === "Card Brands") {
+                acc[field] = "Extract available credit card networks/brands (Visa, Mastercard, American Express). Return as a comma-separated string if multiple.";
+            } else {
+                acc[field] = `Extract details regarding ${field}.`;
+            }
             return acc;
         }, {} as Record<string, string>);
 
