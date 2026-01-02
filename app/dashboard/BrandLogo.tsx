@@ -40,6 +40,30 @@ export const BrandLogo = ({ brand }: { brand: string }) => {
         );
     }
 
+    // Discover
+    if (b.includes('discover')) {
+        return (
+            <img
+                src="/brands/discover.png"
+                alt="Discover"
+                title="Discover"
+                className="h-8 w-auto object-contain"
+            />
+        );
+    }
+
+    // TAS / UnionPay / CUP
+    if (b.includes('unionpay') || b.includes('cup') || b.includes('union pay')) {
+        return (
+            <img
+                src="/brands/unionpay.png"
+                alt="UnionPay"
+                title="UnionPay"
+                className="h-8 w-auto object-contain"
+            />
+        );
+    }
+
     // American Express (keeping existing SVG)
     if (b.includes('american express') || b.includes('amex')) {
         return (

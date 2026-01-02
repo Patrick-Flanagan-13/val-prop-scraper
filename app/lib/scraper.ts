@@ -95,7 +95,7 @@ export async function scrapeAndProcess(targetId: string) {
 
         const fieldSchema = fieldsToExtract.reduce((acc: Record<string, string>, field: string) => {
             if (field === "Card Brands") {
-                acc[field] = "Extract available credit card networks/brands (Visa, Mastercard, American Express). Return as a comma-separated string if multiple.";
+                acc[field] = "Extract available credit card networks/brands (Visa, Mastercard, American Express, Discover, UnionPay). Return as a comma-separated string if multiple.";
             } else {
                 acc[field] = `Extract details regarding ${field}.`;
             }
