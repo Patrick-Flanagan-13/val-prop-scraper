@@ -22,7 +22,13 @@ export default async function ScanResultPage({ params }: { params: Promise<{ id:
     // Parse Scan Data
     if (result.extractedData) {
         try {
-            const parsed = JSON.parse(result.extractedData);
+            let cleanData = result.extractedData.trim();
+            // Remove markdown code blocks if present
+            if (cleanData.startsWith('```')) {
+                cleanData = cleanData.replace(/^```(json)?/, '').replace(/```$/, '').trim();
+            }
+
+            const parsed = JSON.parse(cleanData);
             if (parsed.structured) {
                 scanData = parsed;
             } else {
@@ -31,6 +37,7 @@ export default async function ScanResultPage({ params }: { params: Promise<{ id:
                 scanData = { summary: summary || "", structured: rest };
             }
         } catch (e) {
+            console.error("Failed to parse scan result JSON", e);
             // Fallback for non-json
         }
     }
