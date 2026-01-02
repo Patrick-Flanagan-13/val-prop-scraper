@@ -84,7 +84,7 @@ export default function ScanComparison({ scanId, scanData, masterData }: ScanCom
                         <div className="grid grid-cols-1 divide-y divide-gray-200">
                             {Object.entries(scanStructured).map(([key, value]) => {
                                 const masterValue = masterStructured[key];
-                                const isDifferent = value !== masterValue.trim(); // simple string compare
+                                const isDifferent = value !== (masterValue || "").trim(); // simple string compare
                                 const isPromoting = loadingField === key;
                                 const isBrand = key === 'Card Brands' || key === 'Brands';
 
