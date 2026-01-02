@@ -82,8 +82,18 @@ export async function scrapeAndProcess(targetId: string) {
 
         // Build dynamic schema from customFields or default
         const fieldsToExtract = target.customFields && target.customFields.length > 0
-            ? target.customFields
-            : ["APR", "Points Earned", "Cash Back", "Benefits", "Card Brands"];
+            ? [...target.customFields]
+            : ["APR", "Points Earned", "Cash Back", "Benefits"];
+
+        // Ensure "Card Brands" is always included
+        if (!fieldsToExtract.includes("Card Brands")) {
+            fieldsToExtract.push("Card Brands");
+        }
+
+        // Ensure "Card Brands" is always included
+        if (!fieldsToExtract.includes("Card Brands")) {
+            fieldsToExtract.push("Card Brands");
+        }
 
         const fieldSchema = fieldsToExtract.reduce((acc: Record<string, string>, field: string) => {
             if (field === "Card Brands") {

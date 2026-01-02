@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { promoteFieldsToMaster } from '@/app/lib/scan-actions';
+import { BrandLogo } from '../../BrandLogo';
 
 interface ScanComparisonProps {
     scanId: string;
@@ -85,6 +86,18 @@ export default function ScanComparison({ scanId, scanData, masterData }: ScanCom
                                 const masterValue = masterStructured[key];
                                 const isDifferent = value !== masterValue;
                                 const isPromoting = loadingField === key;
+                                const isBrand = key === 'Card Brands' || key === 'Brands';
+
+                                const renderValue = (val: string) => {
+                                    if (isBrand && val) {
+                                        return (
+                                            <div className="flex gap-2 flex-wrap">
+                                                {val.split(',').map(s => s.trim()).map(brand => <BrandLogo key={brand} brand={brand} />)}
+                                            </div>
+                                        )
+                                    }
+                                    return val;
+                                }
 
                                 return (
                                     <div key={key} className="p-6 grid grid-cols-1 md:grid-cols-12 gap-6 hover:bg-gray-50 transition-colors">
@@ -94,7 +107,9 @@ export default function ScanComparison({ scanId, scanData, masterData }: ScanCom
 
                                         <div className="md:col-span-4 space-y-2">
                                             <span className="text-xs font-semibold text-indigo-600 uppercase">Scan Result</span>
-                                            <dd className="text-sm text-gray-900 whitespace-pre-wrap bg-white p-3 rounded border border-gray-200 shadow-sm">{value}</dd>
+                                            <dd className="text-sm text-gray-900 whitespace-pre-wrap bg-white p-3 rounded border border-gray-200 shadow-sm">
+                                                {renderValue(value)}
+                                            </dd>
                                         </div>
 
                                         <div className="md:col-span-1 flex items-center justify-center">
@@ -102,8 +117,8 @@ export default function ScanComparison({ scanId, scanData, masterData }: ScanCom
                                                 onClick={() => handlePromote(key, value)}
                                                 disabled={!!loadingField || !isDifferent}
                                                 className={`p-2 rounded-full transition-colors ${isDifferent
-                                                        ? 'bg-indigo-100 text-indigo-600 hover:bg-indigo-200'
-                                                        : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                                                    ? 'bg-indigo-100 text-indigo-600 hover:bg-indigo-200'
+                                                    : 'bg-gray-100 text-gray-400 cursor-not-allowed'
                                                     }`}
                                                 title={isDifferent ? "Promote this field to Master" : "Already matches Master"}
                                             >
@@ -122,8 +137,8 @@ export default function ScanComparison({ scanId, scanData, masterData }: ScanCom
 
                                         <div className="md:col-span-4 space-y-2">
                                             <span className="text-xs font-semibold text-gray-500 uppercase">Master Data</span>
-                                            <dd className="text-sm text-gray-900 whitespace-pre-wrap bg-gray-50 p-3 rounded border border-gray-200 shadow-sm min-h-[3rem]">
-                                                {masterValue || <span className="text-gray-400 italic">Empty</span>}
+                                            <dd className="text-sm text-gray-900 whitespace-pre-wrap bg-gray-50 p-3 rounded border border-gray-200 shadow-sm min-h-[3rem] flex items-center">
+                                                {masterValue ? renderValue(masterValue) : <span className="text-gray-400 italic">Empty</span>}
                                             </dd>
                                         </div>
                                     </div>
