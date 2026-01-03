@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { searchScans, generateValueProposition } from './actions';
 import { formatDate } from '@/app/lib/date-utils'; // Assuming this exists or simple date
 import { Skeleton } from '@/app/components/Skeleton';
-import ReactMarkdown from 'react-markdown';
+
 
 // Note: If you don't have react-markdown installed, we might need to fallback or just pre-wrap.
 // Assuming simple pre-wrap for now to avoid dependency issues if not present, checking imports later.
@@ -99,8 +99,8 @@ export default function GeneratorInterface() {
                             key={scan.scanId}
                             onClick={() => toggleSelection(scan.scanId)}
                             className={`p-3 rounded-md cursor-pointer border transition-colors ${selectedScanIds.has(scan.scanId)
-                                    ? 'bg-indigo-50 border-indigo-500 ring-1 ring-indigo-500'
-                                    : 'bg-white border-gray-200 hover:bg-gray-50'
+                                ? 'bg-indigo-50 border-indigo-500 ring-1 ring-indigo-500'
+                                : 'bg-white border-gray-200 hover:bg-gray-50'
                                 }`}
                         >
                             <div className="flex items-start">
