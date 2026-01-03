@@ -103,6 +103,7 @@ export default function GeneratorInterface() {
                                 <option value="gpt-4-turbo">GPT-4 Turbo</option>
                                 <option value="gpt-3.5-turbo">GPT-3.5 Turbo (Fastest)</option>
                                 <option value="o1-preview">o1 Preview (Reasoning)</option>
+                                <option value="o1-mini">o1 Mini (Deep Research)</option>
                             </select>
                         </div>
                     </div>
