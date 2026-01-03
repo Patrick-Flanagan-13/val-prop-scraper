@@ -52,12 +52,7 @@ export default async function DashboardLayout({
                         <span className="truncate">Value Generator</span>
                     </Link>
 
-                    <Link
-                        href="/dashboard/users"
-                        className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-200 hover:text-gray-900"
-                    >
-                        <span className="truncate">User Management</span>
-                    </Link>
+
 
                     <div className="mt-8 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-4 px-2">
                         Account
@@ -67,6 +62,13 @@ export default async function DashboardLayout({
                         className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-200 hover:text-gray-900"
                     >
                         <span className="truncate">Settings</span>
+                    </Link>
+
+                    <Link
+                        href="/dashboard/users"
+                        className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-200 hover:text-gray-900"
+                    >
+                        <span className="truncate">User Management</span>
                     </Link>
                 </nav>
 
