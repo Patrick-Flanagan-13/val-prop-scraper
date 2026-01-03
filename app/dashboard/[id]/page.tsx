@@ -59,17 +59,25 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
             </div>
 
 
-            <div className="bg-white shadow overflow-hidden sm:rounded-lg mb-8">
-                <div className="px-4 py-5 sm:px-6">
-                    <h3 className="text-lg leading-6 font-medium text-gray-900">Configuration</h3>
+            <div className="bg-white px-4 py-5 shadow sm:rounded-lg sm:p-6 mb-8">
+                <div className="md:grid md:grid-cols-3 md:gap-6">
+                    <div className="md:col-span-1">
+                        <h3 className="text-lg font-medium leading-6 text-gray-900">Configuration</h3>
+                        <p className="mt-1 text-sm text-gray-500">
+                            Update extraction settings and schedule.
+                        </p>
+                    </div>
+                    <div className="mt-5 md:col-span-2 md:mt-0">
+                        <TargetConfigurationForm
+                            targetId={target.id}
+                            initialSchedule={target.schedule}
+                            initialPrompt={target.prompt}
+                            initialCustomFields={target.customFields}
+                            initialActive={target.active}
+                            defaultFields={user?.requiredExtractionFields || ["APR", "Points Earned", "Cash Back", "Benefits"]}
+                        />
+                    </div>
                 </div>
-                <TargetConfigurationForm
-                    targetId={target.id}
-                    initialSchedule={target.schedule}
-                    initialPrompt={target.prompt}
-                    initialCustomFields={target.customFields}
-                    initialActive={target.active}
-                />
             </div>
 
             {/* Master Data Section */}

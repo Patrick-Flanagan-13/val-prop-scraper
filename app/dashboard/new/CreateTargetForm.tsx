@@ -83,20 +83,44 @@ export default function CreateTargetForm({ defaultFields }: { defaultFields: str
                 </div>
 
                 <div>
-                    <label htmlFor="customFields" className="block text-sm font-medium text-gray-700">
-                        Fields to Extract (comma separated)
+                    <label className="block text-sm font-medium text-gray-700">
+                        Default Fields (Global)
+                    </label>
+                    <div className="mt-1 p-2 bg-gray-50 rounded-md border border-gray-200 text-sm text-gray-500">
+                        {defaultFields}
+                    </div>
+                    <p className="mt-1 text-xs text-gray-500">
+                        These fields are always included based on your settings.
+                    </p>
+                </div>
+
+                <div>
+                    <label htmlFor="additionalFields" className="block text-sm font-medium text-gray-700">
+                        Additional Fields
                     </label>
                     <div className="mt-1">
                         <input
                             type="text"
+                            name="additionalFields"
+                            id="additionalFields"
+                            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-3 py-2 border"
+                            placeholder="e.g. Annual Fee, Welcome Bonus"
+                            onChange={(e) => {
+                                const additional = e.target.value;
+                                const combined = additional
+                                    ? `${defaultFields}, ${additional}`
+                                    : defaultFields;
+                                (document.getElementById('customFields') as HTMLInputElement).value = combined;
+                            }}
+                        />
+                        <input
+                            type="hidden"
                             name="customFields"
                             id="customFields"
                             defaultValue={defaultFields}
-                            className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-3 py-2 border"
-                            placeholder="APR, Annual Fee, Welcome Bonus"
                         />
                         <p className="mt-1 text-xs text-gray-500">
-                            These columns will appear in the extracted data table.
+                            Add any specific fields for this target here. Do not re-enter default fields.
                         </p>
                     </div>
                 </div>
