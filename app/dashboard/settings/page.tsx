@@ -24,7 +24,7 @@ export default async function Page() {
                 <div className="px-4 py-5 sm:p-6">
                     <h3 className="text-lg font-medium leading-6 text-gray-900">Preferences</h3>
                     <div className="mt-5 space-y-8 divide-y divide-gray-200">
-                        <SettingsForm initialTimezone={user.timezone} />
+                        <SettingsForm initialTimezone={user.timezone} initialName={user.name} />
                         <div className="pt-8">
                             <ExtractionFieldsForm initialFields={user.requiredExtractionFields || ["APR", "Points Earned", "Cash Back", "Benefits"]} />
                         </div>

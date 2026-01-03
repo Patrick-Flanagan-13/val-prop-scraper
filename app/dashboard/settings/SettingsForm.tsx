@@ -3,7 +3,7 @@
 import { updateSettings } from '@/app/lib/actions';
 import { useActionState } from 'react';
 
-export default function SettingsForm({ initialTimezone }: { initialTimezone: string }) {
+export default function SettingsForm({ initialTimezone, initialName }: { initialTimezone: string, initialName?: string | null }) {
     const [message, formAction, isPending] = useActionState(updateSettings, undefined);
 
     // Get list of supported timezones
@@ -11,6 +11,21 @@ export default function SettingsForm({ initialTimezone }: { initialTimezone: str
 
     return (
         <form action={formAction} className="space-y-6 max-w-lg">
+            <div>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                    Display Name
+                </label>
+                <div className="mt-1">
+                    <input
+                        type="text"
+                        name="name"
+                        id="name"
+                        defaultValue={initialName || ''}
+                        className="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm px-4 py-2 border"
+                    />
+                </div>
+            </div>
+
             <div>
                 <label htmlFor="timezone" className="block text-sm font-medium text-gray-700">
                     Timezone

@@ -500,15 +500,21 @@ export async function updateSettings(
     if (!session?.user?.id) return 'Not authenticated';
 
     const timezone = formData.get('timezone');
+    const name = formData.get('name');
 
     if (!timezone || typeof timezone !== 'string') {
         return 'Invalid timezone';
     }
 
+    const dataToUpdate: any = { timezone };
+    if (name && typeof name === 'string' && name.trim().length > 0) {
+        dataToUpdate.name = name.trim();
+    }
+
     try {
         await prisma.user.update({
             where: { id: session.user.id },
-            data: { timezone },
+            data: dataToUpdate,
         });
     } catch (error) {
         return 'Failed to update settings';
