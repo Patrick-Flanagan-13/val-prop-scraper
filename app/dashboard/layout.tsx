@@ -32,24 +32,24 @@ export default async function DashboardLayout({
                     </div>
 
                     <Link
-                        href="/dashboard"
-                        className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-200 hover:text-gray-900"
-                    >
-                        <span className="truncate">Evaluator Dashboard</span>
-                    </Link>
-
-                    <Link
                         href="/dashboard/discovery"
                         className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-200 hover:text-gray-900"
                     >
-                        <span className="truncate">Discovery</span>
+                        <span className="truncate">Find Card Products</span>
+                    </Link>
+
+                    <Link
+                        href="/dashboard"
+                        className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-200 hover:text-gray-900"
+                    >
+                        <span className="truncate">Product Scanner</span>
                     </Link>
 
                     <Link
                         href="/dashboard/generator"
                         className="group flex items-center px-2 py-2 text-sm font-medium rounded-md text-gray-700 hover:bg-gray-200 hover:text-gray-900"
                     >
-                        <span className="truncate">Value Generator</span>
+                        <span className="truncate">Value Proposition Generator</span>
                     </Link>
 
 
